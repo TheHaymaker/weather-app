@@ -11,6 +11,7 @@ export default class ForecastContainer extends Component {
 
     this.state = {
       forecast: [],
+      hourlyFiveDay: [],
       location: {}
     };
 
@@ -25,7 +26,13 @@ export default class ForecastContainer extends Component {
       axios
         .get(url)
         .then(res => {
-          this.setState({ forecast: res.data.list, location: res.data.city });
+          // get only the 5 responses for each city
+          const data = res.data.list.filter(x => /12:00:00/.test(x.dt_txt));
+          this.setState({
+            forecast: data,
+            hourlyFiveDay: res.data.list,
+            location: res.data.city
+          });
         })
         .catch(err => {
           console.log(err);
@@ -69,7 +76,7 @@ export default class ForecastContainer extends Component {
               return (
                 <ul key={day.dt}>
                   <li>
-                    <Moment format={"dddd, MMMM Do"}>{day.dt}</Moment>
+                    <Moment format={"ddd"}>{day.dt_txt}</Moment>
                   </li>
                   <li>
                     temp: {Math.round(utils.kelvinToFahrenheit(day.main.temp))}{" "}

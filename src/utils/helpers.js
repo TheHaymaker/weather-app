@@ -8,23 +8,20 @@ export const buildIcon = day => {
   const hour = today.getHours();
 
   if (hour > 6 && hour < 20) {
-    //Day time
     dayOrNight = "day-";
   } else {
-    //Night time
     dayOrNight = "night-";
   }
-  //   console.log(dayOrNight);
+
   const code = day.weather[0].id;
   let iconDesc = weatherIcons.filter(x => {
     if (x[code]) {
       return x;
     }
+    return null;
   });
   iconDesc = iconDesc[0][code].icon;
   prefix = `${prefix}${iconDesc}`;
-
-  console.log(prefix);
 
   return `${prefix} wi-owm-${dayOrNight}${code}`;
 };
