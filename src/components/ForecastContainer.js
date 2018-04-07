@@ -21,7 +21,7 @@ export default class ForecastContainer extends Component {
     const zip = this.zipCode.value;
     // construct url
     if (zip && zip.length === 5) {
-      const url = `http://api.openweathermap.org/data/2.5/forecast?zip=${zip},us&APPID=41208a14923fc26bae2f6ae307db826e`;
+      const url = `//api.openweathermap.org/data/2.5/forecast?zip=${zip},us&APPID=41208a14923fc26bae2f6ae307db826e`;
       axios
         .get(url)
         .then(res => {
