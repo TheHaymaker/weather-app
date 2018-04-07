@@ -1,0 +1,8 @@
+.degree-symbol {
+  background-image: url(../degree.svg);
+  width: 20px;
+  display: inline-block;
+  height: 15px;
+  background-size: 200%;
+  background-position: 79% 26%;
+}
