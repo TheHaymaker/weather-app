@@ -4164,14 +4164,6 @@ jsx-ast-utils@^2.0.0:
   dependencies:
     array-includes "^3.0.3"
 
-kelvin-to-celsius@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/kelvin-to-celsius/-/kelvin-to-celsius-1.1.0.tgz#07d7fc5a494508c293ff414c7f513b5a175d43cc"
-
-kelvin-to-fahrenheit@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/kelvin-to-fahrenheit/-/kelvin-to-fahrenheit-1.1.0.tgz#6eefd508a9bb2027f65d4931cd5a14829e112228"
-
 killable@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.0.tgz#da8b84bd47de5395878f95d64d02f2449fe05e6b"

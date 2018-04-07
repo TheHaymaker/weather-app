@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Moment from "react-moment";
-import KelvinToFahrenheit from "kelvin-to-fahrenheit";
-import KelvinToCelsius from "kelvin-to-celsius";
 import * as utils from "../utils/helpers";
-import degree from "../degree.svg";
 
 import "./ForecastContainer.css";
 
@@ -75,13 +72,16 @@ export default class ForecastContainer extends Component {
                     <Moment format={"dddd, MMMM Do"}>{day.dt}</Moment>
                   </li>
                   <li>
-                    temp: {Math.round(KelvinToFahrenheit(day.main.temp))} F<i className="degree-symbol" />
+                    temp: {Math.round(utils.kelvinToFahrenheit(day.main.temp))}{" "}
+                    F<i className="degree-symbol" />
                   </li>
                   <li>
-                    low: {Math.round(KelvinToFahrenheit(day.main.temp_min))} F<i className="degree-symbol" />
+                    low:{" "}
+                    {Math.round(utils.kelvinToFahrenheit(day.main.temp_min))} F<i className="degree-symbol" />
                   </li>
                   <li>
-                    high: {Math.round(KelvinToFahrenheit(day.main.temp_max))} F<i className="degree-symbol" />
+                    high:{" "}
+                    {Math.round(utils.kelvinToFahrenheit(day.main.temp_max))} F<i className="degree-symbol" />
                   </li>
                   <li>
                     description: {utils.titleCase(day.weather[0].description)}

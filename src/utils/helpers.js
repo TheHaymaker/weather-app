@@ -38,3 +38,8 @@ export const titleCase = str => {
     })
     .join(" ");
 };
+
+export const kelvinToFahrenheit = k => {
+  const temp = (k - 273.15) * 1.8 + 32;
+  return temp;
+};
