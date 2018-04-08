@@ -1,0 +1,11 @@
+.forecast-card__hourly {
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.time {
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #474c7b;
+  font-family: "Open Sans", Arial, sans-serif;
+}

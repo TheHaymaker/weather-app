@@ -1,16 +1,16 @@
 import React from "react";
 import Moment from "react-moment";
 import * as utils from "../../utils/helpers";
-import "./ForecastCard.css";
+import "./ForecastCardHourly.css";
 
-const ForecastCard = ({ day, handleOnClick, active }) => {
+const ForecastCard = ({ day, handleOnClick }) => {
   return (
     <div
       onClick={() => handleOnClick(day)}
-      className={`forecast-card ${active ? "forecast-card__active" : ""}`}
+      className="forecast-card forecast-card__hourly"
     >
       <p className="day">
-        <Moment format={"ddd"}>{day.dt_txt}</Moment>
+        <Moment format={"h a"}>{day.dt_txt}</Moment>
       </p>
       <div className="weather-icon">
         <i className={utils.buildIcon(day)} />
