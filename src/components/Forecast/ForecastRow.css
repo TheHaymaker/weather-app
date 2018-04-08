@@ -1,0 +1,7 @@
+.forecast-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}

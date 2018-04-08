@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ForecastContainer from "./components/ForecastContainer";
+import ForecastContainer from "./components/Forecast/ForecastContainer";
 import logo from "./logo.svg";
 import "./App.css";
 

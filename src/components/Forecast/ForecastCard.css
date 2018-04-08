@@ -1,0 +1,46 @@
+.degree-symbol {
+  background-image: url(../../degree.svg);
+  width: 12px;
+  display: inline-block;
+  height: 15px;
+  background-size: 271%;
+  background-position: 64% 26%;
+}
+
+.forecast-card {
+  width: 20%;
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid #fbf0f0;
+}
+
+.day {
+  font-size: 20px;
+  text-transform: uppercase;
+  color: #474c7b;
+  font-family: "Open Sans", Arial, sans-serif;
+}
+
+.weather-icon {
+  font-size: 55px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  color: #4999d4;
+}
+
+.temp-high,
+.temp-low {
+  display: inline-block;
+  text-align: center;
+  padding-left: 6px;
+}
+
+.temp-low {
+  opacity: 0.5;
+}
+
+.temps {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
