@@ -44,3 +44,22 @@
   justify-content: space-around;
   text-align: center;
 }
+
+@media screen and (max-width: 570px) {
+  .forecast-card {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .weather-icon {
+    font-size: 131px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #4999d4;
+  }
+
+  .day,
+  .temps {
+    font-size: 25px;
+  }
+}

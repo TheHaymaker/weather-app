@@ -86,6 +86,7 @@ export default class ForecastContainer extends Component {
               id="zipcode"
               ref={zipCode => (this.zipCode = zipCode)}
               type="text"
+              placeholder="e.g. 60618"
             />
             <button onClick={this.handleForecastSearch}>Search</button>
           </div>
