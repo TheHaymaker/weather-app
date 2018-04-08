@@ -65,7 +65,7 @@ export default class ForecastContainer extends Component {
           return { x: count, y: high };
         });
         return data;
-        break;
+
       case "low":
         let count2 = 0;
         const data2 = this.state.hourlyForecastList.map(time => {
@@ -74,7 +74,7 @@ export default class ForecastContainer extends Component {
           return { x: count2, y: low };
         });
         return data2;
-        break;
+
       case "avg":
         let count3 = 0;
         const data3 = this.state.hourlyForecastList.map(time => {
@@ -86,8 +86,18 @@ export default class ForecastContainer extends Component {
           return { x: count3, y: avg };
         });
         return data3;
-        break;
+
       default:
+        let count4 = 0;
+        const data4 = this.state.hourlyForecastList.map(time => {
+          const high = Math.round(utils.kelvinToFahrenheit(time.main.temp_max));
+          const low = Math.round(utils.kelvinToFahrenheit(time.main.temp_min));
+          const avg = (high + low) / 2;
+          // console.log(high, low, avg);
+          count4++;
+          return { x: count4, y: avg };
+        });
+        return data4;
     }
   };
 
