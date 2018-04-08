@@ -81,7 +81,7 @@ export default class ForecastContainer extends Component {
           const high = Math.round(utils.kelvinToFahrenheit(time.main.temp_max));
           const low = Math.round(utils.kelvinToFahrenheit(time.main.temp_min));
           const avg = (high + low) / 2;
-          console.log(high, low, avg);
+          // console.log(high, low, avg);
           count3++;
           return { x: count3, y: avg };
         });
@@ -136,7 +136,7 @@ export default class ForecastContainer extends Component {
       return x;
     });
     const date = day.dt_txt.split(" ").shift();
-    console.log(date);
+    // console.log(date);
     const testDate = RegExp(date);
     const hourlyForecast = newHourly.filter(x => testDate.test(x.dt_txt));
     this.setState({
@@ -153,10 +153,12 @@ export default class ForecastContainer extends Component {
       axios
         .get(url)
         .then(res => {
-          const newState = res.data.list.map(x => (x.active = false));
-          const data = newState.data.list.filter(x =>
-            /12:00:00/.test(x.dt_txt)
-          );
+          const newState = res.data.list.map(x => {
+            x.active = false;
+            return x;
+          });
+          console.log(newState);
+          const data = newState.filter(x => /12:00:00/.test(x.dt_txt));
           this.setState({
             forecast: data,
             hourlyFiveDay: newState,
@@ -168,7 +170,11 @@ export default class ForecastContainer extends Component {
           console.log(err);
         });
     } else {
-      this.setState({ forecast: [], location: {} });
+      this.setState({
+        forecast: [],
+        location: {},
+        displayHourly: false
+      });
     }
   };
 
@@ -228,7 +234,7 @@ export default class ForecastContainer extends Component {
               <VictoryChart
                 theme={VictoryTheme.material}
                 domainPadding={{ x: 20 }}
-                height="200"
+                height={200}
                 style={{
                   data: { opacity: 0.7 },
                   text: {
