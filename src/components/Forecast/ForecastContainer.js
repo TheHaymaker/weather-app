@@ -10,11 +10,47 @@ export default class ForecastContainer extends Component {
     this.state = {
       forecast: [],
       hourlyFiveDay: [],
-      location: {}
+      location: {},
+      located: false
     };
 
     this.handleForecastSearch = this.handleForecastSearch.bind(this);
+    this.handleGeoSearch = this.handleGeoSearch.bind(this);
   }
+
+  componentWillMount() {
+    if ("geolocation" in navigator) {
+      this.setState({ located: true });
+      /* geolocation is available */
+      navigator.geolocation.getCurrentPosition(position => {
+        this.handleGeoSearch(position);
+      });
+    } else {
+      /* geolocation IS NOT available */
+      this.setState({ located: false });
+    }
+  }
+
+  handleGeoSearch = pos => {
+    const coords = pos.coords;
+    const url = `//api.openweathermap.org/data/2.5/forecast?lat=${
+      coords.latitude
+    }&lon=${coords.longitude}&APPID=41208a14923fc26bae2f6ae307db826e`;
+    axios
+      .get(url)
+      .then(res => {
+        const data = res.data.list.filter(x => /12:00:00/.test(x.dt_txt));
+        this.setState({
+          forecast: data,
+          hourlyFiveDay: res.data.list,
+          location: res.data.city,
+          located: false
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   handleForecastSearch = () => {
     const zip = this.zipCode.value;
@@ -41,23 +77,31 @@ export default class ForecastContainer extends Component {
   render() {
     return (
       <div>
-        <label htmlFor="zipcode">zipcode:</label>
-        <input
-          id="zipcode"
-          ref={zipCode => (this.zipCode = zipCode)}
-          type="text"
-        />
-        <button onClick={this.handleForecastSearch}>Search</button>
+        {this.state.located ? (
+          <p>Generating your forecast...</p>
+        ) : (
+          <div>
+            <label htmlFor="zipcode">zipcode:</label>
+            <input
+              id="zipcode"
+              ref={zipCode => (this.zipCode = zipCode)}
+              type="text"
+            />
+            <button onClick={this.handleForecastSearch}>Search</button>
+          </div>
+        )}
         <div>
           {this.state.location && <h2>{this.state.location.name}</h2>}
           {this.state.forecast.length ? (
             <ForecastRow>
               {this.state.forecast.map(day => {
-                return <ForecastCard day={day} />;
+                return <ForecastCard key={day.dt} day={day} />;
               })}
             </ForecastRow>
           ) : (
-            <p>Get your 5-day forecast!</p>
+            <div>
+              {this.state.located ? null : <p>Get your 5-day forecast!</p>}
+            </div>
           )}
         </div>
       </div>
