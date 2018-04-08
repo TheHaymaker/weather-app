@@ -5,11 +5,8 @@ import "./ForecastCardHourly.css";
 
 const ForecastCard = ({ day, handleOnClick }) => {
   return (
-    <div
-      onClick={() => handleOnClick(day)}
-      className="forecast-card forecast-card__hourly"
-    >
-      <p className="day">
+    <div className="forecast-card forecast-card__hourly">
+      <p className="time">
         <Moment format={"h a"}>{day.dt_txt}</Moment>
       </p>
       <div className="weather-icon">
