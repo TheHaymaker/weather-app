@@ -16,6 +16,7 @@ export default class ForecastContainer extends Component {
 
     this.handleForecastSearch = this.handleForecastSearch.bind(this);
     this.handleGeoSearch = this.handleGeoSearch.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   componentWillMount() {
@@ -30,6 +31,12 @@ export default class ForecastContainer extends Component {
       this.setState({ located: false });
     }
   }
+
+  handleKeyPress = e => {
+    if (e.key === "Enter") {
+      this.handleForecastSearch();
+    }
+  };
 
   handleGeoSearch = pos => {
     const coords = pos.coords;
@@ -87,6 +94,7 @@ export default class ForecastContainer extends Component {
               ref={zipCode => (this.zipCode = zipCode)}
               type="text"
               placeholder="e.g. 60618"
+              onKeyPress={this.handleKeyPress}
             />
             <button onClick={this.handleForecastSearch}>Search</button>
           </div>
