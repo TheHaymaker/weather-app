@@ -26,6 +26,10 @@ export const buildIcon = day => {
   return `${prefix} wi-owm-${dayOrNight}${code}`;
 };
 
+export const onlyUnique = (value, index, self) => {
+  return self.indexOf(value) === index;
+};
+
 export const titleCase = str => {
   return str
     .toLowerCase()

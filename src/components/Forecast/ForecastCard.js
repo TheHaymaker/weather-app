@@ -17,11 +17,11 @@ const ForecastCard = ({ day, handleOnClick, active }) => {
       </div>
       <div className="temps">
         <div className="temp-high">
-          {Math.round(utils.kelvinToFahrenheit(day.main.temp_max))}
+          {Math.round(utils.kelvinToFahrenheit(day.main.high))}
           <i className="degree-symbol" />
         </div>
         <div className="temp-low">
-          {Math.round(utils.kelvinToFahrenheit(day.main.temp_min))}
+          {Math.round(utils.kelvinToFahrenheit(day.main.low))}
           <i className="degree-symbol" />
         </div>
       </div>

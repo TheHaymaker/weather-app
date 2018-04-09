@@ -32,6 +32,7 @@ export default class ForecastContainer extends Component {
     this.handleGeoSearch = this.handleGeoSearch.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleHourlyForecast = this.handleHourlyForecast.bind(this);
+    this.getHighsAndLows = this.getHighsAndLows.bind(this);
   }
 
   componentWillMount() {
@@ -129,6 +130,42 @@ export default class ForecastContainer extends Component {
       });
   };
 
+  // get array of dates
+
+  // use that array of dates to map over the available list of hourly forecasts
+  // to generate an array of forecasts only for that day
+
+  // then, use that array for that specific day and evaluate the min/max temps
+  // and grab highest and lowest total values to sort of get the highs and lows for each day
+
+  filterDates = (date, list) => {
+    const testDate = RegExp(date);
+    const hourlyForecastList = list.filter(x => testDate.test(x.dt_txt));
+    let high = 0;
+    let low = 100000;
+    hourlyForecastList.map(day => {
+      high = day.main.temp_max > high ? day.main.temp_max : high;
+      low = day.main.temp_min < low ? day.main.temp_min : low;
+      return { high, low };
+    });
+
+    return { high, low };
+  };
+
+  getHighsAndLows = () => {
+    const wholeList = this.state.hourlyFiveDay;
+    const allTheDates = wholeList.map(x => {
+      const date = x.dt_txt.split(" ").shift();
+      return date;
+    });
+    const unique = allTheDates.filter(utils.onlyUnique);
+    const hsnls = unique.map(date => {
+      return this.filterDates(date, wholeList);
+    });
+
+    return hsnls;
+  };
+
   handleHourlyForecast = day => {
     const id = day.dt;
     const newHourly = this.state.hourlyFiveDay.map(x => {
@@ -167,8 +204,15 @@ export default class ForecastContainer extends Component {
             x.active = false;
             return x;
           });
-          console.log(newState);
+          // console.log(newState);
           const data = newState.filter(x => /12:00:00/.test(x.dt_txt));
+          const highsAndLows = this.getHighsAndLows();
+          const newData = data.map((d, i) => {
+            d.main.high = highsAndLows[i].high;
+            d.main.low = highsAndLows[i].low;
+            return d;
+          });
+          console.log(newData);
           this.setState({
             forecast: data,
             hourlyFiveDay: newState,
@@ -186,6 +230,7 @@ export default class ForecastContainer extends Component {
         displayHourly: false
       });
     }
+    this.getHighsAndLows();
   };
 
   render() {
