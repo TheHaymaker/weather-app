@@ -117,8 +117,15 @@ export default class ForecastContainer extends Component {
       .get(url)
       .then(res => {
         const data = res.data.list.filter(x => /12:00:00/.test(x.dt_txt));
+        const highsAndLows = this.getHighsAndLows(res.data.list);
+        const newData = data.map((d, i) => {
+          d.main.high = highsAndLows[i].high;
+          d.main.low = highsAndLows[i].low;
+          return d;
+        });
+        // console.log(newData);
         this.setState({
-          forecast: data,
+          forecast: newData,
           hourlyFiveDay: res.data.list,
           location: res.data.city,
           located: false,
@@ -152,8 +159,8 @@ export default class ForecastContainer extends Component {
     return { high, low };
   };
 
-  getHighsAndLows = () => {
-    const wholeList = this.state.hourlyFiveDay;
+  getHighsAndLows = data => {
+    const wholeList = data ? data : this.state.hourlyFiveDay;
     const allTheDates = wholeList.map(x => {
       const date = x.dt_txt.split(" ").shift();
       return date;
@@ -214,7 +221,7 @@ export default class ForecastContainer extends Component {
           });
           console.log(newData);
           this.setState({
-            forecast: data,
+            forecast: newData,
             hourlyFiveDay: newState,
             location: res.data.city,
             displayHourly: false
@@ -230,7 +237,6 @@ export default class ForecastContainer extends Component {
         displayHourly: false
       });
     }
-    this.getHighsAndLows();
   };
 
   render() {
