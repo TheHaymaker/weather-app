@@ -23,7 +23,7 @@ export default class ForecastContainer extends Component {
       forecast: [],
       hourlyFiveDay: [],
       location: {},
-      located: false,
+      located: true,
       displayHourly: false,
       hourlyForecastList: []
     };
@@ -35,25 +35,16 @@ export default class ForecastContainer extends Component {
     this.getHighsAndLows = this.getHighsAndLows.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if ("geolocation" in navigator) {
-      this.setState({ located: true });
       /* geolocation is available */
       navigator.geolocation.getCurrentPosition(position => {
-        this.setStateInterval = window.setInterval(() => {
-          this.handleGeoSearch(position);
-        });
+        this.handleGeoSearch(position);
       });
     } else {
       /* geolocation IS NOT available */
-      this.setStateInterval = window.setInterval(() => {
-        this.setState({ located: false });
-      });
+      this.setState({ located: false });
     }
-  }
-
-  componentWillUnmount() {
-    window.clearInterval(this.setStateInterval);
   }
 
   handleDailyTempChart = temp => {
@@ -110,9 +101,9 @@ export default class ForecastContainer extends Component {
 
   handleGeoSearch = pos => {
     const coords = pos.coords;
-    const url = `//api.openweathermap.org/data/2.5/forecast?lat=${
+    const url = `//api.openweathermap.org/data/2.5/forecast?lat='${
       coords.latitude
-    }&lon=${coords.longitude}&APPID=41208a14923fc26bae2f6ae307db826e`;
+    }'&lon='${coords.longitude}'&APPID=41208a14923fc26bae2f6ae307db826e`;
     axios
       .get(url)
       .then(res => {
