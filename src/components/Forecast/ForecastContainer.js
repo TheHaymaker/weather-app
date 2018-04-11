@@ -101,9 +101,9 @@ export default class ForecastContainer extends Component {
 
   handleGeoSearch = pos => {
     const coords = pos.coords;
-    const url = `//api.openweathermap.org/data/2.5/forecast?lat=${
+    const url = `//api.openweathermap.org/data/2.5/forecast?lat='${
       coords.latitude
-    }&lon=${coords.longitude}&APPID=41208a14923fc26bae2f6ae307db826e`;
+    }'&lon='${coords.longitude}'&APPID=41208a14923fc26bae2f6ae307db826e`;
     axios
       .get(url)
       .then(res => {
