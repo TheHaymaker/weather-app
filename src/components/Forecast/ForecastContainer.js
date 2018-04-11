@@ -33,14 +33,29 @@ export default class ForecastContainer extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleHourlyForecast = this.handleHourlyForecast.bind(this);
     this.getHighsAndLows = this.getHighsAndLows.bind(this);
+    this.geolocationError = this.geolocationError.bind(this);
   }
 
+  geolocationError = err => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+
   componentDidMount() {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
     if ("geolocation" in navigator) {
       /* geolocation is available */
-      navigator.geolocation.getCurrentPosition(position => {
-        this.handleGeoSearch(position);
-      });
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.handleGeoSearch(position);
+        },
+        this.geolocationError,
+        options
+      );
     } else {
       /* geolocation IS NOT available */
       this.setState({ located: false });
