@@ -220,7 +220,8 @@ export default class ForecastContainer extends Component {
         this.setState({
           forecast: [],
           location: {},
-          displayHourly: false
+          displayHourly: false,
+          located: false
         });
       });
   };
