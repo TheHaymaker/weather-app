@@ -33,6 +33,9 @@ export default class ForecastContainer extends Component {
 
     this.handleForecastSearch = this.handleForecastSearch.bind(this);
     this.handleGeoSearch = this.handleGeoSearch.bind(this);
+    this.handleGeoSearchCurrentWeather = this.handleGeoSearchCurrentWeather.bind(
+      this
+    );
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleHourlyForecast = this.handleHourlyForecast.bind(this);
     this.getHighsAndLows = this.getHighsAndLows.bind(this);
@@ -119,11 +122,63 @@ export default class ForecastContainer extends Component {
     }
   };
 
+  handleGeoSearchCurrentWeather = (coords, zip) => {
+    const latLon = coords;
+    const url = `//api.openweathermap.org/data/2.5/weather?lat=${
+      latLon.latitude
+    }&lon=${latLon.longitude}&APPID=41208a14923fc26bae2f6ae307db826e`;
+
+    axios
+      .get(url)
+      .then(res => {
+        console.log(res);
+        // const data = res.data.list.filter(x => /12:00:00/.test(x.dt_txt));
+        // const highsAndLows = this.getHighsAndLows(res.data.list);
+        // // console.log(highsAndLows);
+        // const newData = data.map((d, i) => {
+        //   d.main.high = highsAndLows[i].high;
+        //   d.main.low = highsAndLows[i].low;
+        //   return d;
+        // });
+
+        // const newData2 = newData.map(day => day.dt_txt.split(" ").shift());
+        // const newData3 = newData2.map(date => {
+        //   const testDate = RegExp(date);
+        //   const hourlyArray = res.data.list.filter(x =>
+        //     testDate.test(x.dt_txt)
+        //   );
+        //   return hourlyArray;
+        // });
+
+        // const avgData = newData3.map(arr => this.determineForecastAverage(arr));
+
+        // const newDataFinal = newData.map((d, i) => {
+        //   d.main.avgCondition = avgData[i];
+        //   return d;
+        // });
+        // console.log(newData);
+        // this.setState({
+        //   forecast: newDataFinal,
+        //   hourlyFiveDay: res.data.list,
+        //   location: res.data.city,
+        //   located: false,
+        //   displayHourly: false
+        // });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   handleGeoSearch = pos => {
     const coords = pos.coords;
+
+    this.handleGeoSearchCurrentWeather(coords);
+
     const url = `//api.openweathermap.org/data/2.5/forecast?lat=${
       coords.latitude
     }&lon=${coords.longitude}&APPID=41208a14923fc26bae2f6ae307db826e`;
+
     axios
       .get(url)
       .then(res => {
@@ -162,6 +217,11 @@ export default class ForecastContainer extends Component {
       })
       .catch(err => {
         console.log(err);
+        this.setState({
+          forecast: [],
+          location: {},
+          displayHourly: false
+        });
       });
   };
 
