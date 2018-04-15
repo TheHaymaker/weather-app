@@ -13,7 +13,7 @@ const ForecastCard = ({ day, handleOnClick, active }) => {
         <Moment format={"ddd"}>{day.dt_txt}</Moment>
       </p>
       <div className="weather-icon">
-        <i className={utils.buildIcon(day)} />
+        <i className={utils.buildIconFromID(day.main.avgCondition)} />
       </div>
       <div className="temps">
         <div className="temp-high">

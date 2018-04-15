@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import axios from "axios";
 import * as utils from "../../utils/helpers";
 
@@ -14,6 +15,8 @@ import ForecastRow from "./ForecastRow";
 import ForecastCard from "./ForecastCard";
 import ForecastRowHourly from "./ForecastRowHourly";
 import ForecastCardHourly from "./ForecastCardHourly";
+
+import "./ForecastContainer.css";
 
 export default class ForecastContainer extends Component {
   constructor(props) {
@@ -34,6 +37,8 @@ export default class ForecastContainer extends Component {
     this.handleHourlyForecast = this.handleHourlyForecast.bind(this);
     this.getHighsAndLows = this.getHighsAndLows.bind(this);
     this.geolocationError = this.geolocationError.bind(this);
+    this.mostFrequent = this.mostFrequent.bind(this);
+    this.determineForecastAverage = this.determineForecastAverage.bind(this);
   }
 
   geolocationError = err => {
@@ -124,14 +129,31 @@ export default class ForecastContainer extends Component {
       .then(res => {
         const data = res.data.list.filter(x => /12:00:00/.test(x.dt_txt));
         const highsAndLows = this.getHighsAndLows(res.data.list);
+        // console.log(highsAndLows);
         const newData = data.map((d, i) => {
           d.main.high = highsAndLows[i].high;
           d.main.low = highsAndLows[i].low;
           return d;
         });
+
+        const newData2 = newData.map(day => day.dt_txt.split(" ").shift());
+        const newData3 = newData2.map(date => {
+          const testDate = RegExp(date);
+          const hourlyArray = res.data.list.filter(x =>
+            testDate.test(x.dt_txt)
+          );
+          return hourlyArray;
+        });
+
+        const avgData = newData3.map(arr => this.determineForecastAverage(arr));
+
+        const newDataFinal = newData.map((d, i) => {
+          d.main.avgCondition = avgData[i];
+          return d;
+        });
         // console.log(newData);
         this.setState({
-          forecast: newData,
+          forecast: newDataFinal,
           hourlyFiveDay: res.data.list,
           location: res.data.city,
           located: false,
@@ -151,17 +173,38 @@ export default class ForecastContainer extends Component {
   // then, use that array for that specific day and evaluate the min/max temps
   // and grab highest and lowest total values to sort of get the highs and lows for each day
 
+  mostFrequent = array => {
+    let result = array[0].weather[0].id;
+    let tmp = 0;
+    for (let i = 0; i < array.length; i++) {
+      let count = 0;
+      for (let j = 0; j < array.length; j++) {
+        if (array[i].weather[0].id === array[j].weather[0].id) {
+          count++;
+        }
+      }
+      if (count > tmp) {
+        tmp = count;
+        result = array[i].weather[0].id;
+      }
+    }
+    return result;
+  };
+
   filterDates = (date, list) => {
     const testDate = RegExp(date);
     const hourlyForecastList = list.filter(x => testDate.test(x.dt_txt));
     let high = 0;
     let low = 100000;
     hourlyForecastList.map(day => {
+      // console.log("day max: ", day.main.temp_max, "high: ", high);
+      // console.log("day min: ", day.main.temp_min, "low: ", low);
       high = day.main.temp_max > high ? day.main.temp_max : high;
       low = day.main.temp_min < low ? day.main.temp_min : low;
+      // console.log("Each: ", { high, low });
       return { high, low };
     });
-
+    // console.log("High and low: ", { high, low });
     return { high, low };
   };
 
@@ -172,12 +215,19 @@ export default class ForecastContainer extends Component {
       return date;
     });
     const unique = allTheDates.filter(utils.onlyUnique);
+
     const hsnls = unique.map(date => {
       return this.filterDates(date, wholeList);
     });
-
+    // console.log("hsnls: ", hsnls);
+    if (hsnls.length >= 6) {
+      hsnls.shift();
+    }
     return hsnls;
   };
+
+  // pass a unique date
+  determineForecastAverage = array => this.mostFrequent(array);
 
   handleHourlyForecast = day => {
     const id = day.dt;
@@ -225,9 +275,25 @@ export default class ForecastContainer extends Component {
             d.main.low = highsAndLows[i].low;
             return d;
           });
-          console.log(newData);
+
+          const newData2 = newData.map(day => day.dt_txt.split(" ").shift());
+          const newData3 = newData2.map(date => {
+            const testDate = RegExp(date);
+            const hourlyArray = newState.filter(x => testDate.test(x.dt_txt));
+            return hourlyArray;
+          });
+
+          const avgData = newData3.map(arr =>
+            this.determineForecastAverage(arr)
+          );
+
+          const newDataFinal = newData.map((d, i) => {
+            d.main.avgCondition = avgData[i];
+            return d;
+          });
+
           this.setState({
-            forecast: newData,
+            forecast: newDataFinal,
             hourlyFiveDay: newState,
             location: res.data.city,
             displayHourly: false
@@ -235,6 +301,11 @@ export default class ForecastContainer extends Component {
         })
         .catch(err => {
           console.log(err);
+          this.setState({
+            forecast: [],
+            location: {},
+            displayHourly: false
+          });
         });
     } else {
       this.setState({
@@ -250,6 +321,23 @@ export default class ForecastContainer extends Component {
       maxWidth: "70%",
       margin: "0 auto"
     };
+
+    const cards = this.state.forecast.length ? (
+      this.state.forecast.map(day => {
+        return (
+          <ForecastCard
+            key={day.dt}
+            day={day}
+            active={day.active}
+            handleOnClick={d => {
+              this.handleHourlyForecast(d);
+            }}
+          />
+        );
+      })
+    ) : (
+      <div>{this.state.located ? null : <p>Get your 5-day forecast!</p>}</div>
+    );
     return (
       <div>
         {this.state.located ? (
@@ -271,18 +359,14 @@ export default class ForecastContainer extends Component {
           {this.state.location && <h2>{this.state.location.name}</h2>}
           {this.state.forecast.length ? (
             <ForecastRow>
-              {this.state.forecast.map(day => {
-                return (
-                  <ForecastCard
-                    key={day.dt}
-                    day={day}
-                    active={day.active}
-                    handleOnClick={d => {
-                      this.handleHourlyForecast(d);
-                    }}
-                  />
-                );
-              })}
+              <ReactCSSTransitionGroup
+                transitionName="forecast-card"
+                transitionAppear={true}
+                transitionEnterTimeout={500}
+                transitionLeaveTimeout={300}
+              >
+                {cards}
+              </ReactCSSTransitionGroup>
             </ForecastRow>
           ) : (
             <div>

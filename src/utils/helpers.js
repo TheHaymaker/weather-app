@@ -26,6 +26,32 @@ export const buildIcon = day => {
   return `${prefix} wi-owm-${dayOrNight}${code}`;
 };
 
+export const buildIconFromID = id => {
+  let dayOrNight;
+  let prefix = "wi wi-";
+
+  const today = new Date();
+  const hour = today.getHours();
+
+  if (hour > 6 && hour < 20) {
+    dayOrNight = "day-";
+  } else {
+    dayOrNight = "night-";
+  }
+
+  const code = id;
+  let iconDesc = weatherIcons.filter(x => {
+    if (x[code]) {
+      return x;
+    }
+    return null;
+  });
+  iconDesc = iconDesc[0][code].icon;
+  prefix = `${prefix}${iconDesc}`;
+
+  return `${prefix} wi-owm-${dayOrNight}${code}`;
+};
+
 export const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index;
 };
