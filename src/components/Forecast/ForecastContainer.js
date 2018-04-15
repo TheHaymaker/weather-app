@@ -45,6 +45,13 @@ export default class ForecastContainer extends Component {
   }
 
   geolocationError = err => {
+    this.setState({
+      forecast: [],
+      location: {},
+      displayHourly: false,
+      located: false
+    });
+
     console.warn(`ERROR(${err.code}): ${err.message}`);
   };
 
@@ -173,7 +180,7 @@ export default class ForecastContainer extends Component {
   handleGeoSearch = pos => {
     const coords = pos.coords;
 
-    this.handleGeoSearchCurrentWeather(coords);
+    // this.handleGeoSearchCurrentWeather(coords);
 
     const url = `//api.openweathermap.org/data/2.5/forecast?lat=${
       coords.latitude
@@ -217,12 +224,6 @@ export default class ForecastContainer extends Component {
       })
       .catch(err => {
         console.log(err);
-        this.setState({
-          forecast: [],
-          location: {},
-          displayHourly: false,
-          located: false
-        });
       });
   };
 
@@ -330,7 +331,7 @@ export default class ForecastContainer extends Component {
           });
           // console.log(newState);
           const data = newState.filter(x => /12:00:00/.test(x.dt_txt));
-          const highsAndLows = this.getHighsAndLows();
+          const highsAndLows = this.getHighsAndLows(res.data.list);
           const newData = data.map((d, i) => {
             d.main.high = highsAndLows[i].high;
             d.main.low = highsAndLows[i].low;
@@ -423,6 +424,7 @@ export default class ForecastContainer extends Component {
               <ReactCSSTransitionGroup
                 transitionName="forecast-card"
                 transitionAppear={true}
+                transitionAppearTimeout={500}
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={300}
               >
