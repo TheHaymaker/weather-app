@@ -18,6 +18,7 @@
   transform: translate(0, 0);
   opacity: 1;
   transition: 0.5s all ease;
+  position: relative;
 }
 
 .forecast-card__active {
@@ -42,13 +43,10 @@
   transition: opacity 500ms ease-in;
 }
 
-.forecast-card-leave {
-  opacity: 1;
-}
-
-.forecast-card-leave.forecast-card-leave-active {
-  opacity: 0.01;
-  transition: opacity 300ms ease-in;
+.forecast-card-leave-active {
+  position: absolute;
+  opacity: 0;
+  transition: 0s all ease !important;
 }
 
 /* .forecast-card-enter-active {

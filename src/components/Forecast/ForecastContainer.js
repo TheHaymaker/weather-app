@@ -384,22 +384,6 @@ export default class ForecastContainer extends Component {
       margin: "0 auto"
     };
 
-    const cards = this.state.forecast.length ? (
-      this.state.forecast.map(day => {
-        return (
-          <ForecastCard
-            key={day.dt}
-            day={day}
-            active={day.active}
-            handleOnClick={d => {
-              this.handleHourlyForecast(d);
-            }}
-          />
-        );
-      })
-    ) : (
-      <div>{this.state.located ? null : <p>Get your 5-day forecast!</p>}</div>
-    );
     return (
       <div>
         {this.state.located ? (
@@ -417,8 +401,8 @@ export default class ForecastContainer extends Component {
             <button onClick={this.handleForecastSearch}>Search</button>
           </div>
         )}
+        {this.state.location && <h2>{this.state.location.name}</h2>}
         <div>
-          {this.state.location && <h2>{this.state.location.name}</h2>}
           {this.state.forecast.length ? (
             <ForecastRow>
               <ReactCSSTransitionGroup
@@ -428,7 +412,16 @@ export default class ForecastContainer extends Component {
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={300}
               >
-                {cards}
+                {this.state.forecast.map(day => (
+                  <ForecastCard
+                    key={Math.round(Math.random() * day.dt)}
+                    day={day}
+                    active={day.active}
+                    handleOnClick={d => {
+                      this.handleHourlyForecast(d);
+                    }}
+                  />
+                ))}
               </ReactCSSTransitionGroup>
             </ForecastRow>
           ) : (
@@ -440,9 +433,17 @@ export default class ForecastContainer extends Component {
         {this.state.hourlyForecastList.length && this.state.displayHourly ? (
           <div>
             <ForecastRowHourly>
-              {this.state.hourlyForecastList.map(day => {
-                return <ForecastCardHourly key={day.dt} day={day} />;
-              })}
+              <ReactCSSTransitionGroup
+                transitionName="forecast-card"
+                transitionAppear={true}
+                transitionAppearTimeout={500}
+                transitionEnterTimeout={500}
+                transitionLeaveTimeout={300}
+              >
+                {this.state.hourlyForecastList.map(day => {
+                  return <ForecastCardHourly key={day.dt} day={day} />;
+                })}
+              </ReactCSSTransitionGroup>
             </ForecastRowHourly>
             <div style={style}>
               <VictoryChart
